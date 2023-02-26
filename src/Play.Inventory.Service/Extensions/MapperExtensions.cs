@@ -5,8 +5,8 @@ namespace Play.Inventory.Service.Extensions;
 
 public static class MapperExtensions
 {
-    public static InventoryItemDTO AsDTO(this InventoryItem item)
+    public static InventoryItemDTO AsDTO(this InventoryItem item, string name, string? description)
     {
-        return new InventoryItemDTO(item.CatalogItemId, item.Quantity, item.AccuiredDate);
+        return new InventoryItemDTO(item.CatalogItemId,  name, description, item.Quantity, item.AccuiredDate);
     }
 }
