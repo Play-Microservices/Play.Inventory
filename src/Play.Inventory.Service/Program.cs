@@ -11,6 +11,8 @@ var logger = LoggerFactory.Create(config =>
     config.AddConsole();
 }).CreateLogger("Program");
 
+var jitterer = new Random();
+
 // Add services to the container.
 builder.AddMongo()
        .AddMongoRepository<InventoryItem>("inventoryitems");
@@ -21,7 +23,7 @@ builder.Services.AddHttpClient<CatalogClient>(client =>
 })
 .AddTransientHttpErrorPolicy(policy => policy.Or<TimeoutRejectedException>().WaitAndRetryAsync(
     5, 
-    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)) + TimeSpan.FromMilliseconds(jitterer.Next(0, 1000)),
     onRetry: (outcome, timespan, retryAttempt) => 
     {
         logger.LogWarning($"Delaying for {timespan.TotalSeconds} seconds, then making retry {retryAttempt}");
