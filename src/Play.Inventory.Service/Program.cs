@@ -5,7 +5,10 @@ using Play.Inventory.Service.Entities;
 using Polly;
 using Polly.Timeout;
 
+const string AllowedOriginSetting = "AllowedOrigin";
+
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 var logger = LoggerFactory.Create(config =>
 {
@@ -34,6 +37,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseCors(builder => 
+    {
+        builder.WithOrigins(configuration[AllowedOriginSetting]!)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 }
 
 app.UseHttpsRedirection();
