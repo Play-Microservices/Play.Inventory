@@ -1,18 +1,15 @@
 using MassTransit;
 using Play.Catalog.Contracts;
 using Play.Common.Repositories;
-using Play.Inventory.Service.Entities;
+using Play.Inventory.API.Entities;
 
-namespace Play.Inventory.Service.Consumers;
+namespace Play.Inventory.API.Consumers;
 
-public class CatalogItemUpdatedConsumer : IConsumer<CatalogItemUpdated>
+public class CatalogItemUpdatedConsumer(
+    IRepository<CatalogItem> repository
+) : IConsumer<CatalogItemUpdated>
 {
-    private readonly IRepository<CatalogItem> _repository;
-    
-    public CatalogItemUpdatedConsumer(IRepository<CatalogItem> repository)
-    {
-        _repository = repository;
-    }
+    private readonly IRepository<CatalogItem> _repository = repository;
 
     public async Task Consume(ConsumeContext<CatalogItemUpdated> context)
     {

@@ -1,19 +1,16 @@
 using MassTransit;
 using Play.Catalog.Contracts;
 using Play.Common.Repositories;
-using Play.Inventory.Service.Entities;
+using Play.Inventory.API.Entities;
 
-namespace Play.Inventory.Service.Consumers;
+namespace Play.Inventory.API.Consumers;
 
-public class CatalogItemDeletedConsumer : IConsumer<CatalogItemDeleted>
+public class CatalogItemDeletedConsumer(
+    IRepository<CatalogItem> repository
+) : IConsumer<CatalogItemDeleted>
 {
-    private readonly IRepository<CatalogItem> _repository;
+    private readonly IRepository<CatalogItem> _repository = repository;
     
-    public CatalogItemDeletedConsumer(IRepository<CatalogItem> repository)
-    {
-        _repository = repository;
-    }
-
     public async Task Consume(ConsumeContext<CatalogItemDeleted> context)
     {
         var message = context.Message;

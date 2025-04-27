@@ -1,7 +1,7 @@
-using Play.Inventory.Service.DTOs;
-using Play.Inventory.Service.Entities;
+using Play.Inventory.API.DTOs;
+using Play.Inventory.API.Entities;
 
-namespace Play.Inventory.Service.Extensions;
+namespace Play.Inventory.API.Extensions;
 
 public static class MapperExtensions
 {

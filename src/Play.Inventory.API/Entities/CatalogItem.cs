@@ -1,6 +1,6 @@
 using Play.Common.Entites;
 
-namespace Play.Inventory.Service.Entities;
+namespace Play.Inventory.API.Entities;
 
 public class CatalogItem : IEntity
 {

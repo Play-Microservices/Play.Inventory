@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using Play.Inventory.Service.DTOs;
+using Play.Inventory.API.DTOs;
 
-namespace Play.Inventory.Service.Clients;
+namespace Play.Inventory.API.Clients;
 
 public class CatalogClient
 {

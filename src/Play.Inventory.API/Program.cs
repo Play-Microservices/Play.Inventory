@@ -1,7 +1,7 @@
 using Play.Common.MongoDB;
 using Play.Common.MassTransit;
-using Play.Inventory.Service.Clients;
-using Play.Inventory.Service.Entities;
+using Play.Inventory.API.Clients;
+using Play.Inventory.API.Entities;
 using Polly;
 using Polly.Timeout;
 

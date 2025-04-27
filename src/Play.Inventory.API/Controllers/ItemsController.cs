@@ -1,28 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Play.Common.Repositories;
-using Play.Inventory.Service.Clients;
-using Play.Inventory.Service.DTOs;
-using Play.Inventory.Service.Entities;
-using Play.Inventory.Service.Extensions;
+using Play.Inventory.API.Clients;
+using Play.Inventory.API.DTOs;
+using Play.Inventory.API.Entities;
+using Play.Inventory.API.Extensions;
 
-namespace Play.Inventory.Service.Controllers;
+namespace Play.Inventory.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ItemsController : ControllerBase
+public class ItemsController(
+    IRepository<InventoryItem> inventoryItemsRepository,
+    IRepository<CatalogItem> catalogItemsRepository,
+    ILogger<ItemsController> logger) : ControllerBase
 {
-    private readonly IRepository<InventoryItem> _inventoryItemsRepository;
-    private readonly IRepository<CatalogItem> _catalogItemsRepository;
-    private readonly ILogger<ItemsController> _logger;
-
-    public ItemsController(IRepository<InventoryItem> inventoryItemsRepository,
-        IRepository<CatalogItem> catalogItemsRepository,
-        ILogger<ItemsController> logger)
-    {
-        _inventoryItemsRepository = inventoryItemsRepository;
-        _catalogItemsRepository = catalogItemsRepository;
-        _logger = logger;
-    }
+    private readonly IRepository<InventoryItem> _inventoryItemsRepository = inventoryItemsRepository;
+    private readonly IRepository<CatalogItem> _catalogItemsRepository = catalogItemsRepository;
+    private readonly ILogger<ItemsController> _logger = logger;
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<InventoryItemDTO>>> GetAsync(Guid userId)
@@ -32,6 +26,11 @@ public class ItemsController : ControllerBase
         var inventoryItemEntities = await _inventoryItemsRepository.GetAllAsync(item => item.UserId == userId);
         var itemIds = inventoryItemEntities.Select(item => item.CatalogItemId);
         var catalogItemEntities = await _catalogItemsRepository.GetAllAsync(item => itemIds.Contains(item.Id));
+        if (catalogItemEntities.Count() != itemIds.Count())
+        {
+            _logger.LogWarning("Some catalog items are missing for user {UserId}", userId);
+            return NotFound();
+        }
 
         var inventoryItemDTOs = inventoryItemEntities.Select(inventoryItem => 
         {
