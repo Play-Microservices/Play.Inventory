@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Play.Common.Repositories;
 using Play.Inventory.API.Clients;
@@ -8,6 +9,7 @@ using Play.Inventory.API.Extensions;
 namespace Play.Inventory.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public class ItemsController(
     IRepository<InventoryItem> inventoryItemsRepository,
