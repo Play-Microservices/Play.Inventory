@@ -1,8 +1,10 @@
+using MassTransit;
 using Play.Common.Identity;
 using Play.Common.MongoDB;
 using Play.Common.MassTransit;
 using Play.Inventory.API.Clients;
 using Play.Inventory.API.Entities;
+using Play.Inventory.API.Exceptions;
 using Polly;
 using Polly.Timeout;
 
@@ -22,7 +24,11 @@ var jitterer = new Random();
 builder.AddMongo()
        .AddMongoRepository<InventoryItem>("inventoryitems")
        .AddMongoRepository<CatalogItem>("catalogitems")
-       .AddMassTransitWithRabbitMQ()
+       .AddMassTransitWithRabbitMQ(configurator =>
+       {
+           configurator.Interval(3, TimeSpan.FromSeconds(5));
+           configurator.Ignore<UnknownItemException>();
+       })
        .AddJwtBearerAuthentication();
 
 AddCatalogClient(builder, logger, jitterer);
