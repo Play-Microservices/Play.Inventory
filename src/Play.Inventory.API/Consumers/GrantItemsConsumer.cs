@@ -16,8 +16,8 @@ public class GrantItemsConsumer(
     public async Task Consume(ConsumeContext<GrantItems> context)
     {
         var message = context.Message;
-        var item = await _catalogItemsRepository.GetAsync(message.CatalogItemId);
-        if (item is null)
+        var catalogItem = await _catalogItemsRepository.GetAsync(message.CatalogItemId);
+        if (catalogItem is null)
         {
             throw new UnknownItemException(message.CatalogItemId);
         }
@@ -25,7 +25,7 @@ public class GrantItemsConsumer(
         var inventoryItem = await _inventoryItemsRepository.GetAsync(item => 
             item.UserId == message.UserId && item.CatalogItemId == message.CatalogItemId);
 
-        if (inventoryItem is null)
+        if (inventoryItem == null)
         {
             inventoryItem = new InventoryItem
             {
@@ -34,10 +34,12 @@ public class GrantItemsConsumer(
                 Quantity = message.Quantity,
                 AccuiredDate = DateTimeOffset.UtcNow
             };
+            
+            inventoryItem.MessageIds.Add(context.MessageId!.Value);
 
             await _inventoryItemsRepository.CreateAsync(inventoryItem);
         }
-        else
+        else if (!inventoryItem.MessageIds.Contains(context.MessageId!.Value))
         {
             inventoryItem.Quantity += message.Quantity;
 
