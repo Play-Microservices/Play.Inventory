@@ -16,11 +16,11 @@ public class CatalogItemDeletedConsumer(
         var message = context.Message;
 
         var item = await _repository.GetAsync(message.ItemId);
-        if (item is not null)
+        if (item == null)
         {
             return;
         }
 
-        await _repository.DeleteAsync(item!.Id);
+        await _repository.DeleteAsync(item.Id);
     }
 }

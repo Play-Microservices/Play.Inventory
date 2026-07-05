@@ -8,12 +8,12 @@ namespace Play.Inventory.API.Consumers;
 
 public class SubtractItemsConsumer(
     IRepository<InventoryItem> inventoryItemsRepository,
-    IRepository<CatalogItem> catalogItemsRepository)
+    IRepository<CatalogItem> catalogItemsRepository) : IConsumer<SubtractItems>
 {
     private readonly IRepository<InventoryItem> _inventoryItemsRepository = inventoryItemsRepository;
     private readonly IRepository<CatalogItem> _catalogItemsRepository = catalogItemsRepository;
     
-    public async Task Consume(ConsumeContext<GrantItems> context)
+    public async Task Consume(ConsumeContext<SubtractItems> context)
     {
         var message = context.Message;
         var item = await _catalogItemsRepository.GetAsync(message.CatalogItemId);
@@ -25,7 +25,7 @@ public class SubtractItemsConsumer(
         var inventoryItem = await _inventoryItemsRepository.GetAsync(item => 
             item.UserId == message.UserId && item.CatalogItemId == message.CatalogItemId);
 
-        if (inventoryItem is not null)
+        if (inventoryItem != null)
         {
             inventoryItem.Quantity -= message.Quantity;
 

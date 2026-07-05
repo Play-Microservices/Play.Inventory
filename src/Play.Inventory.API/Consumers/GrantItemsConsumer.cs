@@ -8,7 +8,7 @@ namespace Play.Inventory.API.Consumers;
 
 public class GrantItemsConsumer(
     IRepository<InventoryItem> inventoryItemsRepository,
-    IRepository<CatalogItem> catalogItemsRepository)
+    IRepository<CatalogItem> catalogItemsRepository) : IConsumer<GrantItems>
 {
     private readonly IRepository<InventoryItem> _inventoryItemsRepository = inventoryItemsRepository;
     private readonly IRepository<CatalogItem> _catalogItemsRepository = catalogItemsRepository;
