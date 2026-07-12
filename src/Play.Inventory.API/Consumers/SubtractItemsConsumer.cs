@@ -30,6 +30,10 @@ public class SubtractItemsConsumer(
             inventoryItem.Quantity -= message.Quantity;
 
             await _inventoryItemsRepository.UpdateAsync(inventoryItem);
+            await context.Publish(new InventoryItemUpdated(
+                inventoryItem.UserId, 
+                inventoryItem.CatalogItemId, 
+                inventoryItem.Quantity));
             
             inventoryItem.MessageIds.Add(context.MessageId!.Value);
         }
