@@ -25,12 +25,13 @@ var jitterer = new Random();
 builder.AddMongo()
        .AddMongoRepository<InventoryItem>("inventoryitems")
        .AddMongoRepository<CatalogItem>("catalogitems")
-       .AddMassTransitWithRabbitMQ(configurator =>
-       {
-           configurator.Interval(3, TimeSpan.FromSeconds(5));
-           configurator.Ignore<UnknownItemException>();
-       })
        .AddJwtBearerAuthentication();
+
+builder.Services.AddMassTransitWithMessageBroker(configuration, configurator =>
+{
+    configurator.Interval(3, TimeSpan.FromSeconds(5));
+    configurator.Ignore<UnknownItemException>();
+});
 
 AddCatalogClient(builder, logger, jitterer);
 

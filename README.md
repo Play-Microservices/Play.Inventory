@@ -40,41 +40,65 @@ guest:guest
 $env:GH_OWNER="Play-Microservices"
 $env:GH_USERNAME="[USERNAME HERE]"
 $env:GH_PAT="[PAT HERE]"
-$version="1.0.2"
-docker build --secret id=GH_USERNAME --secret id=GH_OWNER --secret id=GH_PAT -t play.inventory:$version .
+$version="1.0.3"
+$appname="playeconomy"
+docker build \
+    --secret id=GH_USERNAME \
+    --secret id=GH_OWNER \
+    --secret id=GH_PAT \
+    -t "$appname.azurecr.io/play.inventory:$version" .
 ```
 
 ```bash
 export GH_OWNER="Play-Microservices"
 export GH_USERNAME="[USERNAME HERE]"
 export GH_PAT="[PAT HERE]"
-version="1.0.2"
+version="1.0.3"
+appname="playeconomy"
 
 docker build \
   --secret id=GH_OWNER \
   --secret id=GH_USERNAME \
   --secret id=GH_PAT \
-  -t play.inventory:$version .
+  -t "$appname.azurecr.io/play.inventory:$version" .
 ```
 
 ### Run the docker image
 
 ```powershell
-version="1.0.2"
-docker run -it -=rm -p 5004:8080 --name catalog -e MongoDbSettings__Host=mongo -e RabbitMQSettings__Host=rabbitmq -e --network playinfrastructure_default play.inventory:$version
+version="1.0.3"
+appname="playeconomy"
+cosmosDbConnString="[CONN STRING HERE]"
+serviceBusConnString="[CONN STRING HERE]"
+docker run -it -=rm -p 5004:8080 --name inventory \
+  -e MongoDbSettings__ConnectionString=$cosmosDbConnString \
+  -e ServiceBusSettings__ConnectionString=$serviceBusConnString \
+  -e ServiceSettings__MessageBroker="SERVICEBUS" \
+    "$appname.azurecr.io/play.inventory:$version" .
 ```
 
 ```bash
-version="1.0.2"
+version="1.0.3"
+appname="playeconomy"
+cosmosDbConnString="[CONN STRING HERE]"
+serviceBusConnString="[CONN STRING HERE]"
 docker run -it --rm \
   -p 5004:8080 \
-  --name catalog \
-  -e MongoDbSettings__Host=mongo \
-  -e RabbitMQSettings__Host=rabbitmq \
-  --network playinfrastructure_default \
-  "play.inventory:$version"
+  --name inventory \
+  -e MongoDbSettings__ConnectionString=$cosmosDbConnString \
+  -e ServiceBusSettings__ConnectionString=$serviceBusConnString \
+  -e ServiceSettings__MessageBroker="SERVICEBUS" \
+  "$appname.azurecr.io/play.inventory:$version" .
 ```
 
+### Publishing the Docker image
+
+```bash
+appname="playeconomy"
+version="1.0.3"
+az acr login --name $appname
+docker push "$appname.azurecr.io/play.inventory:$version"
+```
 ---
 
 ## Contract Library
