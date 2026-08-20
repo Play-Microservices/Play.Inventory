@@ -1,5 +1,5 @@
 using GreenPipes;
-using MassTransit;
+using Play.Common.HealthChecks;
 using Play.Common.Identity;
 using Play.Common.MongoDB;
 using Play.Common.MassTransit;
@@ -26,6 +26,10 @@ builder.AddMongo()
        .AddMongoRepository<InventoryItem>("inventoryitems")
        .AddMongoRepository<CatalogItem>("catalogitems")
        .AddJwtBearerAuthentication();
+
+builder.Services
+    .AddHealthChecks()
+    .AddMongoDb();
 
 builder.Services.AddMassTransitWithMessageBroker(configuration, configurator =>
 {
@@ -63,6 +67,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapPlayEconomyHealthChecks();
 
 app.Run();
 

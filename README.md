@@ -40,7 +40,7 @@ guest:guest
 $env:GH_OWNER="Play-Microservices"
 $env:GH_USERNAME="[USERNAME HERE]"
 $env:GH_PAT="[PAT HERE]"
-$version="1.0.3"
+$version="1.0.4"
 $appname="playeconomy"
 docker build \
     --secret id=GH_USERNAME \
@@ -53,7 +53,7 @@ docker build \
 export GH_OWNER="Play-Microservices"
 export GH_USERNAME="[USERNAME HERE]"
 export GH_PAT="[PAT HERE]"
-version="1.0.3"
+version="1.0.4"
 appname="playeconomy"
 
 docker build \
@@ -66,7 +66,7 @@ docker build \
 ### Run the docker image
 
 ```powershell
-version="1.0.3"
+version="1.0.4"
 appname="playeconomy"
 cosmosDbConnString="[CONN STRING HERE]"
 serviceBusConnString="[CONN STRING HERE]"
@@ -78,7 +78,7 @@ docker run -it -=rm -p 5004:8080 --name inventory \
 ```
 
 ```bash
-version="1.0.3"
+version="1.0.4"
 appname="playeconomy"
 cosmosDbConnString="[CONN STRING HERE]"
 serviceBusConnString="[CONN STRING HERE]"
@@ -95,7 +95,7 @@ docker run -it --rm \
 
 ```bash
 appname="playeconomy"
-version="1.0.3"
+version="1.0.4"
 az acr login --name $appname
 docker push "$appname.azurecr.io/play.inventory:$version"
 ```
@@ -123,13 +123,13 @@ dotnet nuget add source "<Absolute_path_to_package_folder>" -n PlayEconomy
 
 ```bash
 dotnet pack -o ../../../packages/
-dotnet pack -o ../../../packages/ -p:PackageVersion=1.0.1
+dotnet pack -o ../../../packages/ -p:PackageVersion=1.0.4
 ```
 
 ### Publish package to GitHub
 
 ```bash
-version="1.0.1"
+version="1.0.4"
 owner="Play-Microservices"
 gh_pat="[PAT HERE]"
 
